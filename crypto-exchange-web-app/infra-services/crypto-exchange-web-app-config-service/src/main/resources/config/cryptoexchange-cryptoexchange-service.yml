@@ -1,0 +1,41 @@
+server:
+  port: 9365
+
+# Database properties
+spring:
+  cloud:
+  datasource:
+    driverClassName: ${DB_DRIVER_CLASS:com.mysql.cj.jdbc.Driver}
+    platform: mysql
+    username: ${DB_USERNAME:}
+    password: ${DB_PASSWORD:}
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_SERVER_PORT:5432}/${DB_NAME:crypto_exchange_db}?createDatabaseIfNotExist=true
+    initialization-mode: always
+  jpa:
+    database: mysql
+    show-sql: true
+    # set generate-ddl as false before pushing to production
+    generate-ddl: true
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    properties:
+      hibernate:
+        default_schema: crypto_exchange_db
+        # Set the ddl-auto to none before pushing to production.
+        ddl-auto: update
+        temp:
+          use_jdbc_metadata_defaults: false
+        jdbc:
+          lob:
+            non_contextual_creation: true
+# API Documentation settings
+com.justrightcrypto.configuration:
+  security:
+    auth:
+      validate-token-url:
+        url: http://localhost:8762/validateToken
+# Information that gets displayed in the spring admin UI
+# ------------------------------------------------------
+info:
+  app:
+    name: cryptoexchange-cryptoexchange-service
+    description: Crypto Exchange Application

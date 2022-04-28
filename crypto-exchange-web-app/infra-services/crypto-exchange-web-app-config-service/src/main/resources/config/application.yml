@@ -1,0 +1,136 @@
+# Application Information
+# -----------------------
+# Log settings
+# ------------
+logging:
+  level:
+    com.netflix: ERROR
+    org.springframework: ${ISY_SPRING_LOGGING_LEVEL:ERROR}
+    com.justrightcrypto.exchange: ${ISY_LOGGING_LEVEL:INFO}
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  console:
+  file:
+    name: /opt/apps/logs/isymphony.log
+
+# Management security & Actuator endpoints
+# ----------------------------------------
+management:
+  context-path: /admin/actuator
+endpoints:
+  restart:
+    enabled: true
+  shutdown:
+    enabled: true
+  health:
+    sensitive: false
+
+# Eureka Settings
+# ---------------
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 10
+    health-check-url-path: ${management.context-path}/health
+    preferIpAddress: true
+  client:
+    registryFetchIntervalSeconds: 5
+    serviceUrl:
+      defaultZone: http://discovery-service:${DISCOVERY_SERVICE_PORT:8761}/eureka/
+---
+# Routes configuration
+# --------------------
+spring:
+  rabbitmq:
+    host: crypto-exchange-web-app-rabbitmq
+    port: 5672
+    username: isymphonyAdmin
+    password: kIPGKqrJfjE7bTIU3ZMs7uNLBWW6kiEMv9tbzHXrOoVxDEUp4qfTKYnQeH3Kpe8g
+    #ssl:
+    #  enabled: false
+    #  key-store: "file:///opt/apps/isymphony/certs/rabbitmq/key-store.p12"
+    #  key-store-password: bunnies
+    #  trust-store: "file:///opt/apps/isymphony/certs/rabbitmq/trust-store.p12"
+    #  trust-store-type: PKCS12
+    #  trust-store-password: bunnies
+  liquibase:
+    change-log: classpath:/db/changelog/tenant-changelog.xml
+    enabled: false
+  # Database properties
+  datasource:
+    driverClassName: ${DB_DRIVER_CLASS:com.mysql.cj.jdbc.Driver}
+    platform: mysql
+    username: ${DB_USERNAME:}
+    password: ${DB_PASSWORD:}
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_SERVER_PORT:5432}/${DB_NAME:crypto_exchange_db}?createDatabaseIfNotExist=true
+    initialization-mode: always
+    hikari:
+      connection-timeout: 30000
+      minimum-idle: 10
+      maximum-pool-size: 120
+      idle-timeout: 20000
+      max-lifetime: 1000
+      auto-commit: true
+  jpa:
+    database:  MYSQL
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    show-sql: false
+    # set generate-ddl as false before pushing to production
+    generate-ddl: false
+    properties:
+      hibernate:
+        # Set the ddl-auto to none before pushing to production.
+        ddl-auto: none
+        temp:
+          use_jdbc_metadata_defaults: false
+        jdbc:
+          lob:
+            non_contextual_creation: true
+# iSymphony Security aspects.
+com.justrightcrypto.configuration:
+  security:
+    cors:
+      headers:
+        allowed-origins:
+          - http://localhost:8080
+          - https://localhost:8080
+          - http://localhost:8762
+          - https://localhost:8762
+        allowed-methods:
+          - OPTIONS
+          - POST
+          - GET
+          - PATCH
+          - PUT
+          - DELETE
+        allowed-headers:
+          - Origin
+          - Accept
+          - X-Requested-With
+          - Content-Type
+          - Access-Control-Request-Method
+          - Access-Control-Request-Headers
+          - Authorization
+        max-age: 3600
+        allow-credentials: true
+    profile:
+      picture:
+        storage-directory:  ${USER_PROFILE_PICTURE_STORAGE_DIRECTORY:/data/storage/profile-pictures}
+
+  # API documentation settings.
+  # ---------------------------
+  api:
+    documentation:
+      title: crypto-exchange-web-app
+      license: GNU Lesser General Public License
+      licenseUrl: https://www.gnu.org/licenses/lgpl-3.0.en.html
+      version: 1.0.0-SNAPSHOT
+      contact:
+        name: Jagannath Mishra
+        email: Jagannath Mishra
+      base-package: "com.justrightcrypto.exchange"
+      security-schema:
+        name: bearerAuth
+        scheme: bearer
+        type: HTTP
+        bearerFormat: JWT
+

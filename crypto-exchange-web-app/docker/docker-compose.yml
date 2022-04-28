@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+
+    # Service - crypto_exchange_db-db-server
+    crypto_exchange_db-db-server:
+        container_name: crypto_exchange_db-db-server
+        image: mysql:8.0
+        restart: always
+        ports:
+            - "5432:5432"
+        environment:
+            - MYSQL_DATABASE=crypto_exchange_db
+            - MYSQL_PASSWORD=
+            - MYSQL_USER=
+            - MYSQL_ROOT_PASSWORD=
+            - MYSQL_DB=crypto_exchange_db
+
+# Service - cryptoexchange-cryptoexchange-service
+    cryptoexchange-cryptoexchange-service:
+        container_name: cryptoexchange-cryptoexchange-service
+        image: img/cryptoexchange-cryptoexchange-service:1.0.0
+        restart: always
+        ports:
+            - "9365:9365"
+        depends_on:
+            - crypto_exchange_db-db-server
+

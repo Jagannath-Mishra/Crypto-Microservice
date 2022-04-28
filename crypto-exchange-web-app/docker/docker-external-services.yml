@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+
+  # Service -platform-db-server
+  crypto-exchange-web-app-platform-db-server:
+    container_name: crypto-exchange-web-app-platform-db-server
+    build: crypto-exchange-web-app-platform-db-server
+    image: crypto-exchange-web-app/crypto-exchange-web-app-platform-db:12.4
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=crypto-exchange-web-app-platform-db
+    volumes:
+      - /opt/apps/crypto-exchange-web-app/db/crypto-exchange-web-app-platform-db:/var/lib/postgresql/data
+
+  # RabbitMQ container
+  # ------------------
+  crypto-exchange-web-app-rabbitmq:
+    container_name: crypto-exchange-web-app-rabbitmq
+    image: rabbitmq:3.6.9-management
+    restart: "no"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${ISY_RABBITMQ_USERNAME}
+      RABBITMQ_DEFAULT_PASS: ${ISY_RABBITMQ_PASSWORD}
+      RABBITMQ_NODENAME: crypto-exchange-web-app-rabbitmq

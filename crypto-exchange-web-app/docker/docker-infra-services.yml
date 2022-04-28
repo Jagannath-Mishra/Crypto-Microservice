@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+
+  # Config-Service container
+  # ------------------------
+  config-service:
+    container_name: crypto-exchange-web-app-config-service
+    image: img/crypto-exchange-web-app-config-service:1.0.0
+    restart: always
+    ports:
+      - "8888:8888"
+    environment:
+      - SERVICE_PORT=8888
+
+  # Discovery-Service container
+  # ---------------------------
+  discovery-service:
+    container_name: crypto-exchange-web-app-discovery-service
+    image: img/crypto-exchange-web-app-discovery-service:1.0.0
+    restart: always
+    depends_on:
+      - config-service
+    ports:
+      - "8761:8761"
+    environment:
+      - SERVICE_PORT=8761
+
+  # Gateway service container
+  # -------------------------
+  gateway-service:
+    container_name: crypto-exchange-web-app-gateway-service
+    image: img/crypto-exchange-web-app-gateway-service:1.0.0
+    restart: always
+    depends_on:
+      - discovery-service
+    ports:
+      - "8762:8762"
+    environment:
+      - SERVICE_PORT=8762
+
+  # Authentication-Service container
+  # ------------------------
+  authentication-service:
+    container_name: crypto-exchange-web-app-authentication-service
+    image: img/crypto-exchange-web-app-authentication-service:1.0.0
+    restart: always
+    ports:
+      - "9527:9527"
+    depends_on:
+      - discovery-service
+    environment:
+      - SERVICE_PORT=9527

@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+
+  # Tenant provisioning service container
+  # ------------------------
+  tenant-provisioning-service:
+    container_name: crypto-exchange-web-app-multi-tenancy-tenant-provisioning-service
+    image: img/crypto-exchange-web-app-multi-tenancy-tenant-provisioning-service:1.0.0
+    restart: always
+    ports:
+      - "REPLACE_TENANT_PROVISIONING_SERVICE_PORT:REPLACE_TENANT_PROVISIONING_SERVICE_PORT"
+    environment:
+      - SERVICE_PORT=REPLACE_TENANT_PROVISIONING_SERVICE_PORT
+    volumes:
+      - /opt/apps/logs/crypto-exchange-web-app-multi-tenancy-tenant-provisioning-service:/opt/apps/logs/crypto-exchange-web-app-multi-tenancy-tenant-provisioning-service
+  # Tenant platform service container
+  # ---------------------------
+  tenant-platform-service:
+    container_name: crypto-exchange-web-app-multi-tenancy-tenant-platform
+    image: img/crypto-exchange-web-app-multi-tenancy-tenant-platform:1.0.0
+    restart: always
+    ports:
+      - "REPLACE_TENANT_PLATFORM_SERVICE_PORT:REPLACE_TENANT_PLATFORM_SERVICE_PORT"
+    environment:
+      - SERVICE_PORT=REPLACE_TENANT_PLATFORM_SERVICE_PORT
+    volumes:
+      - /opt/apps/logs/crypto-exchange-web-app-multi-tenancy-tenant-platform-service:/opt/apps/logs/crypto-exchange-web-app-multi-tenancy-tenant-platform-service
+
+  # User management service container
+  # -------------------------
+  user-management-service:
+    container_name: crypto-exchange-web-app-multi-tenancy-user-management
+    image: img/crypto-exchange-web-app-multi-tenancy-user-management:1.0.0
+    restart: always
+    ports:
+      - "REPLACE_USER_MANAGEMENT_SERVICE_PORT:REPLACE_USER_MANAGEMENT_SERVICE_PORT"
+    environment:
+      - SERVICE_PORT=REPLACE_USER_MANAGEMENT_SERVICE_PORT
+    volumes:
+      - /opt/apps/logs/crypto-exchange-web-app-multi-tenancy-user-management-service:/opt/apps/logs/crypto-exchange-web-app-multi-tenancy-user-management-service
